@@ -82,68 +82,328 @@
         </div>
     </section>
 
-    <!-- Каталог з товаром, галереєю та детальним описом -->
-<section id="catalog" class="py-20 container mx-auto px-4">
-    <div class="text-center mb-12">
-        <h2 class="text-4xl font-extrabold text-red-700 mb-2 festive-title">Святковий Хіт Сезону 🎄</h2>
-        <p class="text-gray-600">Топ продажів з нашого каталогу з вигідною націнкою та гарантією якості!</p>
-        <img src="https://i.postimg.cc/7YbyjB4v/ng-baner.jpg" class="w-full max-w-2xl mx-auto rounded-2xl shadow-lg mt-6 object-cover h-32 md:h-48" alt="Акція">
-    </div>
-
-    <div class="flex justify-center">
-        <!-- Картка товару -->
-        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-red-100 max-w-xl w-full relative group">
-            <!-- Лейбл знижки -->
-            <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-4 py-1.5 rounded-full z-10 shadow-md">
-                🔥 Хіт продажу (-40%)
-            </div>
-            
-            <!-- Галерея фотографій (усі ваші фото) -->
-            <div class="relative bg-gray-100">
-                <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" class="gallery-img active w-full h-80 object-cover" data-index="0">
-                <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" class="gallery-img w-full h-80 object-cover" data-index="1">
-                <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" class="gallery-img w-full h-80 object-cover" data-index="2">
-                
-                <!-- Кнопки гортання галереї -->
-                <button onclick="prevImage()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-10 h-10 flex justify-center items-center shadow-lg transition">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button onclick="nextImage()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-10 h-10 flex justify-center items-center shadow-lg transition">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-
-            <div class="p-8">
-                <h3 class="text-3xl font-extrabold mb-3 text-gray-900">Святковий Декор "Магія Нового Року"</h3>
-                
-                <!-- Великий та детальний опис для покупця -->
-                <div class="bg-red-50 border-l-4 border-red-600 p-4 rounded-r-xl mb-6 text-gray-700 text-sm space-y-2">
-                    <p class="font-bold text-red-700"><i class="fa-solid fa-circle-check mr-1"></i> Все необхідне в одному комплекті:</p>
-                    <p>✨ <b>Призначення:</b> Створення неперевершеної новорічної атмосфери вдома, в офісі чи на святковій вечірці.</p>
-                    <p>🌟 <b>Особливості:</b> Висока якість матеріалів, яскраве безпечне світлення, економне споживання енергії.</p>
-                    <p>📦 <b>Комплектація:</b> Готовий набір із фірмовим упакуванням ToTo.Gifts. Чудово підходить на подарунок!</p>
-                    <p>🚚 <b>Доставка та оплата:</b> Відправляємо Новою Поштою по всій Україні (1-3 дні). Можлива оплата при отриманні.</p>
-                </div>
-
-                <!-- Ціна з урахуванням націнки 40% -->
-                <div class="flex justify-between items-center mb-6 bg-gray-50 p-4 rounded-2xl">
-                    <div>
-                        <span class="text-xs text-gray-400 block uppercase font-bold">Ціна зі знижкою:</span>
-                        <span class="text-3xl font-extrabold text-red-600">650 ₴</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xs text-gray-400 block uppercase font-bold">Звичайна ціна:</span>
-                        <span class="text-lg text-gray-400 line-through">910 ₴</span>
-                    </div>
-                </div>
-
-                <button onclick="addToCart('Святковий Декор Магія Нового Року', 650)" class="w-full btn-magic text-white font-bold py-4 rounded-2xl flex justify-center items-center gap-2 text-lg shadow-lg">
-                    <i class="fa-solid fa-cart-plus"></i> Додати в санки (Купити)
-                </button>
-            </div>
+    <!-- Каталог товарів (10 позицій з галереєю, описом та націнкою 40%) -->
+    <section id="catalog" class="py-20 container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-extrabold text-red-700 mb-2 festive-title">Святковий Каталог Хітів 🎄</h2>
+            <p class="text-gray-600">Обирайте найкращі гаджети та подарунки за вигідними цінами!</p>
+            <img src="https://i.postimg.cc/7YbyjB4v/ng-baner.jpg" class="w-full max-w-2xl mx-auto rounded-2xl shadow-lg mt-6 object-cover h-32 md:h-48" alt="Акція">
         </div>
-    </div>
-</section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Товар 1 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Портативна колонка Bluetooth</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>🔊 <b>Звук:</b> Потужний чистий бас, захист від бризок.</p>
+                            <p>🔋 <b>Акумулятор:</b> До 6 годин автономної роботи без підзарядки.</p>
+                            <p>🎁 <b>Чудовий вибір:</b> Ідеально для новорічних вечірок та подарунка друзям!</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">650 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">910 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Портативна колонка Bluetooth', 650)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 2 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Power Bank 20000 mAh</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>⚡ <b>Потужність:</b> Швидка зарядка QC 3.0, два USB-порти.</p>
+                            <p>🛡️ <b>Надійність:</b> Захист від перепадів напруги та перегріву.</p>
+                            <p>📦 <b>Незамінна річ:</b> Завжди тримайте зв'язок у будь-яких умовах.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">1120 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">1570 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Power Bank 20000 mAh', 1120)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 3 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Автомобільний компресор</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>🚗 <b>Призначення:</b> Швидке підкачування коліс авто, велосипеда чи м'яча.</p>
+                            <p>💡 <b>Особливості:</b> Вбудований ліхтарик для роботи в темний час доби.</p>
+                            <p>🛠️ <b>Комплектація:</b> Набір насадок та зручний кейс для зберігання.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">890 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">1250 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Автомобільний компресор', 890)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 4 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Світлодіодна LED стрічка Smart</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>✨ <b>Керування:</b> Через смартфон або пульт ДГ, мільйони кольорів RGB.</p>
+                            <p>🎄 <b>Святковий затишок:</b> Створює неймовірну атмосферу в кімнаті.</p>
+                            <p>🛠️ <b>Монтаж:</b> Легко клеїться на будь-яку поверхню завдяки липкій основі.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">380 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">530 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Світлодіодна LED стрічка Smart', 380)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 5 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Бездротові навушники TWS</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>🎵 <b>Звук:</b> Об'ємне звучання з активним шумозаглушенням.</p>
+                            <p>🔋 <b>Кейс:</b> Забезпечує до 24 годин загального відтворення музики.</p>
+                            <p>🎁 <b>Подарунок:</b> Чудовий стильний аксесуар для повсякденного використання.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">590 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">830 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Бездротові навушники TWS', 590)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 6 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Настільна лампа нічник з USB</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>💡 <b>Освітлення:</b> Регулювання яскравості та колірної температури.</p>
+                            <p>🛋️ <b>Дизайн:</b> Стильний мінімалістичний дизайн для сучасного інтер'єру.</p>
+                            <p>⚡ <b>Живлення:</b> Працює від акумулятора та USB-розетки.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">460 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">650 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Настільна лампа нічник з USB', 460)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 7 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Автомобільний тримач з бездротовою зарядкою</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>📱 <b>Зручність:</b> Автоматичний затискач смартфона при наближенні.</p>
+                            <p>⚡ <b>Швидкість:</b> Швидка бездротова зарядка гаджета під час руху.</p>
+                            <p>🛠️ <b>Монтаж:</b> Надійна фіксація на дефлектор або панель приладів.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">750 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">1050 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Автомобільний тримач з бездротовою зарядкою', 750)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 8 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Крутий Новорічний Проєктор зірок</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>🌟 <b>Ефект:</b> Заповнює всю кімнату рухомими зорями та галактиками.</p>
+                            <p>🎉 <b>Свято:</b> Ідеальний пристрій для створення святкового настрою.</p>
+                            <p>🎛️ <b>Керування:</b> Комплектується зручним пультом дистанційного керування.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">950 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">1330 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Новорічний Проєктор зірок', 950)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 9 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Набір подарунковий "Зимова Казка"</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>🎁 <b>Склад:</b> Готовий презент у брендованій коробці з бантом.</p>
+                            <p>✨ <b>Універсальність:</b> Чудово підійде колегам, друзям чи рідним.</p>
+                            <p>🚚 <b>Швидко:</b> Відправляємо в день замовлення без затримок.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">820 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">1150 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Набір подарунковий Зимова Казка', 820)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Товар 10 -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative">
+                <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                <div class="gallery-container relative bg-gray-100">
+                    <img src="https://i.postimg.cc/B6jdkkTf/ng.jpg" class="active" data-index="0">
+                    <img src="https://i.postimg.cc/nzX6gg4J/ng2.jpg" data-index="1">
+                    <img src="https://i.postimg.cc/pTmg44ft/ng1.jpg" data-index="2">
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-gray-900">Музична новорічна куля зі снігом</h3>
+                        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs space-y-1">
+                            <p>❄️ <b>Ефект:</b> Автоматичний вихор сніжинок та приємна новорічна мелодія.</p>
+                            <p>🕯️ <b>Підсвітка:</b> М'яке різнокольорове світло створює святковий затишок.</p>
+                            <p>🏆 <b>Топ продажів:</b> Найулюбленіший подарунок для дітей та дорослих.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                            <span class="text-2xl font-extrabold text-red-600">760 ₴</span>
+                            <span class="text-sm text-gray-400 line-through">1060 ₴</span>
+                        </div>
+                        <button onclick="addToCart('Музична новорічна куля зі снігом', 760)" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
     
 
     <!-- Футер з соцмережами -->
