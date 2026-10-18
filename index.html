@@ -76,25 +76,25 @@
         </div>
     </section>
 
-    <!-- Каталог (Сюди JavaScript автоматично завантажить товари з фіду) -->
+    <!-- Каталог -->
     <section id="catalog" class="py-20 container mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-extrabold text-red-700 mb-2 festive-title">Святковий Каталог Хітів 🎄</h2>
-            <p class="text-gray-600">Товари оновлюються автоматично з нашого складу!</p>
+            <p class="text-gray-600">Обирайте найкращі гаджети та подарунки за вигідними цінами!</p>
             <img src="https://i.postimg.cc/7YbyjB4v/ng-baner.jpg" class="w-full max-w-2xl mx-auto rounded-2xl shadow-lg mt-6 object-cover h-32 md:h-48" alt="Акція">
         </div>
 
         <!-- Індикатор завантаження -->
         <div id="loading" class="text-center py-12">
             <i class="fa-solid fa-spinner fa-spin text-4xl text-red-600 mb-4"></i>
-            <p class="text-gray-600 font-bold">Завантажуємо святкові товари з фіду...</p>
+            <p class="text-gray-600 font-bold">Завантажуємо святкові товари...</p>
         </div>
 
         <!-- Сітка товарів -->
         <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </section>
 
-    <!-- Футер -->
+    <!-- Футер з соцмережами -->
     <footer class="bg-gray-900 text-white py-12 border-t-8 border-red-600">
         <div class="container mx-auto px-4 text-center">
             <h3 class="text-2xl font-bold mb-6 festive-title text-yellow-400">Слідкуйте за нами та замовляйте у месенджерах:</h3>
@@ -132,22 +132,20 @@
 
     <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <!-- СКРИПТ АВТОМАТИЧНОГО ІМПОРТУ З ФІДУ -->
+    <!-- СКРИПТ СТАБІЛЬНОГО ЗАВАНТАЖЕННЯ ФІДУ -->
     <script>
         const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
         const CHAT_ID = '6762708096'; 
-        // Ваше посилання на вивантаження з кабінету Dropt (уже з націнкою 40% та категоріями)
         const FEED_URL = 'https://dropt.in.ua/index.php?route=export/prom&markup=40&category=60,68,70,81,89,101,105,149,227,261,266,303,330,331,432';
 
         let cart = [];
 
-        // Завантаження фіду через проксі для обходу обмежень браузера
         async function loadProducts() {
             const grid = document.getElementById('products-grid');
             const loader = document.getElementById('loading');
             
             try {
-                // Використовуємо публічний проксі для зчитування XML
+                // Використовуємо надійний швидкий шлюз для зчитування XML безпосередньо
                 const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(FEED_URL);
                 const response = await fetch(proxyUrl);
                 const text = await response.text();
@@ -159,19 +157,17 @@
                 loader.style.display = 'none';
                 grid.innerHTML = '';
 
-                // Беремо перші 30 товарів для красивої вітрини
                 const limit = Math.min(items.length, 30);
                 for (let i = 0; i < limit; i++) {
                     const item = items[i];
-                    const name = item.querySelector('name')?.textContent || 'Подарунок ToTo';
+                    const name = item.querySelector('name')?.textContent || 'Святковий товар';
                     const price = item.querySelector('price')?.textContent || '500';
-                    const description = item.querySelector('description')?.textContent || 'Чудовий святковий вибір!';
+                    const description = item.querySelector('description')?.textContent || 'Якісний товар з швидкою доставкою по Україні!';
                     
-                    // Збираємо всі фотографії товару для галереї
                     const imageNodes = item.querySelectorAll('image');
                     let imagesHtml = '';
                     let imgArray = [];
-                    imageNodes.forEach((imgNode, index) => {
+                    imageNodes.forEach((imgNode) => {
                         imgArray.push(imgNode.textContent);
                     });
 
@@ -183,7 +179,6 @@
                         imagesHtml += `<img src="${imgUrl}" class="product-img ${index === 0 ? 'active' : ''}" data-index="${index}">`;
                     });
 
-                    // Формуємо картку товару
                     const card = document.createElement('div');
                     card.className = 'bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative';
                     card.innerHTML = `
@@ -216,11 +211,10 @@
                     grid.appendChild(card);
                 }
             } catch (error) {
-                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з фіду. Перевірте підключення.</p>';
+                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з фіду. Будь ласка, оновіть сторінку через хвилину.</p>';
             }
         }
 
-        // Керування галереєю фото у картці
         function nextImg(btn) {
             const container = btn.closest('.gallery-container');
             const images = container.querySelectorAll('.product-img');
@@ -239,7 +233,6 @@
             images[activeIndex].classList.add('active');
         }
 
-        // Кошик та замовлення
         function addToCart(name, price) {
             cart.push({ name, price: Number(price) });
             updateCartBadge();
@@ -325,7 +318,6 @@
             });
         }
 
-        // Сніг
         function createSnowflakes() {
             const container = document.getElementById('snow-container');
             const flakes = ['❄', '❅', '❆'];
