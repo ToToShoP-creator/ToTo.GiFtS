@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToTo ShoP - Новорічний Ярмарок</title>
+    <title>ToTo.Gifts - Новорічний Ярмарок Подарунків</title>
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/5NjMDPJM/ng-logo1.jpg">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome для іконок -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Pacifico&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
         @keyframes fall { 0% { top: -10px; } 100% { top: 100vh; } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(20px); } }
 
-        /* Анімація кнопки */
+        /* Кнопки та анімації */
         .btn-magic {
             background: linear-gradient(45deg, #e63946, #d90429);
             box-shadow: 0 4px 15px rgba(217, 4, 41, 0.4);
@@ -38,10 +38,8 @@
             box-shadow: 0 8px 25px rgba(217, 4, 41, 0.6);
         }
 
-        /* Галерея */
-        .gallery-img { display: none; width: 100%; height: 300px; object-fit: cover; }
-        .gallery-img.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .product-img { display: none; width: 100%; height: 260px; object-fit: cover; }
+        .product-img.active { display: block; }
     </style>
 </head>
 <body class="relative">
@@ -52,16 +50,12 @@
     <!-- Шапка сайту -->
     <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b-4 border-red-600 shadow-md">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <!-- Логотип -->
             <a href="#" class="flex items-center gap-3">
-                <img src="https://i.postimg.cc/5NjMDPJM/ng-logo1.jpg" alt="ToTo ShoP Logo" class="w-12 h-12 rounded-full border-2 border-yellow-400">
-                <span class="text-2xl font-extrabold text-red-700 festive-title tracking-wide">ToTo ShoP</span>
+                <img src="https://i.postimg.cc/5NjMDPJM/ng-logo1.jpg" alt="ToTo.Gifts Logo" class="w-12 h-12 rounded-full border-2 border-yellow-400">
+                <span class="text-2xl font-extrabold text-red-700 festive-title tracking-wide">ToTo.Gifts</span>
             </a>
-            
-            <!-- Контакти і Кошик -->
             <div class="flex items-center gap-6">
                 <a href="tel:+380994979241" class="hidden md:flex font-bold text-gray-800 hover:text-red-600 transition"><i class="fa-solid fa-phone mr-2 mt-1"></i> +380 99 497 92 41</a>
-                
                 <button onclick="toggleCart()" class="relative text-red-700 text-2xl hover:scale-110 transition">
                     <i class="fa-solid fa-sleigh"></i>
                     <span id="cart-count" class="absolute -top-2 -right-3 bg-yellow-400 text-xs text-red-900 font-bold px-2 py-1 rounded-full shadow">0</span>
@@ -75,15 +69,32 @@
         <img src="https://i.postimg.cc/DymKRCh3/ng-baner1.jpg" alt="Новорічний Банер" class="absolute inset-0 w-full h-full object-cover opacity-60">
         <div class="relative z-10 text-center px-4">
             <h1 class="text-5xl md:text-7xl text-white festive-title mb-4 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">Новорічна Магія Див!</h1>
-            <p class="text-xl md:text-2xl text-yellow-300 font-bold drop-shadow-md mb-8">Найкращі подарунки для ваших близьких від ToTo ShoP</p>
+            <p class="text-xl md:text-2xl text-yellow-300 font-bold drop-shadow-md mb-8">Найкращі подарунки та гаджети для ваших близьких від ToTo.Gifts</p>
             <a href="#catalog" class="btn-magic text-white font-bold text-lg px-8 py-4 rounded-full uppercase tracking-wider inline-flex items-center gap-2">
                 <i class="fa-solid fa-gift"></i> Обрати подарунок
             </a>
         </div>
     </section>
-    
 
-    <!-- Футер з соцмережами -->
+    <!-- Каталог (Сюди JavaScript автоматично завантажить товари з фіду) -->
+    <section id="catalog" class="py-20 container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-extrabold text-red-700 mb-2 festive-title">Святковий Каталог Хітів 🎄</h2>
+            <p class="text-gray-600">Товари оновлюються автоматично з нашого складу!</p>
+            <img src="https://i.postimg.cc/7YbyjB4v/ng-baner.jpg" class="w-full max-w-2xl mx-auto rounded-2xl shadow-lg mt-6 object-cover h-32 md:h-48" alt="Акція">
+        </div>
+
+        <!-- Індикатор завантаження -->
+        <div id="loading" class="text-center py-12">
+            <i class="fa-solid fa-spinner fa-spin text-4xl text-red-600 mb-4"></i>
+            <p class="text-gray-600 font-bold">Завантажуємо святкові товари з фіду...</p>
+        </div>
+
+        <!-- Сітка товарів -->
+        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+
+    <!-- Футер -->
     <footer class="bg-gray-900 text-white py-12 border-t-8 border-red-600">
         <div class="container mx-auto px-4 text-center">
             <h3 class="text-2xl font-bold mb-6 festive-title text-yellow-400">Слідкуйте за нами та замовляйте у месенджерах:</h3>
@@ -94,86 +105,143 @@
                 <a href="https://www.facebook.com/marketplace/profile/61550282762355/" target="_blank" class="text-blue-600 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-facebook"></i></a>
             </div>
             <p class="text-lg mb-4"><i class="fa-solid fa-phone text-red-500"></i> +380 99 497 92 41</p>
-            <p class="text-gray-500 text-sm">© 2024 ToTo ShoP. Усі права захищено. Створено з новорічним настроєм 🎄</p>
+            <p class="text-gray-500 text-sm">© 2024 ToTo.Gifts. Усі права захищено. Створено з новорічним настроєм 🎄</p>
         </div>
     </footer>
 
-    <!-- Спливаюче вікно кошика (Приховане за замовчуванням) -->
+    <!-- Кошик -->
     <div id="cart-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex justify-center items-center backdrop-blur-sm">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 relative m-4 border-4 border-red-600 overflow-y-auto max-h-[90vh]">
             <button onclick="toggleCart()" class="absolute top-4 right-4 text-gray-400 hover:text-red-600 text-2xl"><i class="fa-solid fa-xmark"></i></button>
             <h2 class="text-3xl font-bold text-center text-red-700 mb-6 festive-title">Ваші Подарунки 🎁</h2>
-            
-            <div id="cart-items" class="mb-6 border-b pb-4">
-                <p class="text-center text-gray-500">Кошик поки що порожній.</p>
-            </div>
-            
-            <div class="text-xl font-bold flex justify-between mb-6">
-                <span>Разом:</span>
-                <span id="cart-total" class="text-red-600">0 ₴</span>
-            </div>
-
-            <!-- Форма замовлення -->
+            <div id="cart-items" class="mb-6 border-b pb-4"><p class="text-center text-gray-500">Ваші санки порожні ❄️</p></div>
+            <div class="text-xl font-bold flex justify-between mb-6"><span>Разом:</span><span id="cart-total" class="text-red-600">0 ₴</span></div>
             <form id="order-form" onsubmit="sendTelegramOrder(event)" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Як до вас звертатися?</label>
-                    <input type="text" id="client_name" required class="w-full bg-gray-100 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500" placeholder="Ім'я та Прізвище">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Телефон</label>
-                    <input type="tel" id="client_phone" required class="w-full bg-gray-100 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500" placeholder="+380...">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">Місто та відділення НП</label>
-                    <input type="text" id="client_delivery" required class="w-full bg-gray-100 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500" placeholder="Київ, НП №1">
-                </div>
-                <button type="submit" class="w-full btn-magic text-white font-bold py-4 rounded-xl text-lg mt-4">
-                    Оформити замовлення <i class="fa-solid fa-paper-plane ml-2"></i>
-                </button>
+                <div><label class="block text-sm font-bold text-gray-700 mb-1">Як до вас звертатися?</label><input type="text" id="client_name" required class="w-full bg-gray-100 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500" placeholder="Ім'я та Прізвище"></div>
+                <div><label class="block text-sm font-bold text-gray-700 mb-1">Телефон</label><input type="tel" id="client_phone" required class="w-full bg-gray-100 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500" placeholder="+380..."></div>
+                <div><label class="block text-sm font-bold text-gray-700 mb-1">Місто та відділення НП</label><input type="text" id="client_delivery" required class="w-full bg-gray-100 border-0 rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500" placeholder="Київ, НП №1"></div>
+                <button type="submit" class="w-full btn-magic text-white font-bold py-4 rounded-xl text-lg mt-4">Оформити замовлення <i class="fa-solid fa-paper-plane ml-2"></i></button>
             </form>
         </div>
     </div>
 
-    <!-- Тост-повідомлення про додавання (Новорічне) -->
+    <!-- Тост -->
     <div id="toast" class="fixed bottom-[-100px] left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-3 z-50 font-bold border-2 border-yellow-400">
-        <i class="fa-solid fa-holly-berry text-yellow-400 text-xl"></i>
-        <span>Товар додано в санки! 🎅</span>
+        <i class="fa-solid fa-holly-berry text-yellow-400 text-xl"></i><span>Товар додано в санки! 🎅</span>
     </div>
 
-    <!-- Кнопка нагору -->
-    <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white">
-        <i class="fa-solid fa-arrow-up"></i>
-    </button>
+    <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <!-- СКРИПТИ -->
+    <!-- СКРИПТ АВТОМАТИЧНОГО ІМПОРТУ З ФІДУ -->
     <script>
-        /* НАЛАШТУВАННЯ TELEGRAM БОТА */
         const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
-        // УВАГА! Введіть сюди свій CHAT ID (дізнатися можна в боті @userinfobot)
         const CHAT_ID = '6762708096'; 
+        // Ваше посилання на вивантаження з кабінету Dropt (уже з націнкою 40% та категоріями)
+        const FEED_URL = 'https://dropt.in.ua/index.php?route=export/prom&markup=40&category=60,68,70,81,89,101,105,149,227,261,266,303,330,331,432';
 
-        // Логіка галереї
-        let currentImgIndex = 0;
-        const images = document.querySelectorAll('.gallery-img');
-        
-        function showImage(index) {
-            images.forEach(img => img.classList.remove('active'));
-            images[index].classList.add('active');
-        }
-        function nextImage() {
-            currentImgIndex = (currentImgIndex + 1) % images.length;
-            showImage(currentImgIndex);
-        }
-        function prevImage() {
-            currentImgIndex = (currentImgIndex - 1 + images.length) % images.length;
-            showImage(currentImgIndex);
-        }
-
-        // Логіка кошика
         let cart = [];
-        
+
+        // Завантаження фіду через проксі для обходу обмежень браузера
+        async function loadProducts() {
+            const grid = document.getElementById('products-grid');
+            const loader = document.getElementById('loading');
+            
+            try {
+                // Використовуємо публічний проксі для зчитування XML
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(FEED_URL);
+                const response = await fetch(proxyUrl);
+                const text = await response.text();
+                
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(text, 'text/xml');
+                const items = xml.querySelectorAll('item');
+                
+                loader.style.display = 'none';
+                grid.innerHTML = '';
+
+                // Беремо перші 30 товарів для красивої вітрини
+                const limit = Math.min(items.length, 30);
+                for (let i = 0; i < limit; i++) {
+                    const item = items[i];
+                    const name = item.querySelector('name')?.textContent || 'Подарунок ToTo';
+                    const price = item.querySelector('price')?.textContent || '500';
+                    const description = item.querySelector('description')?.textContent || 'Чудовий святковий вибір!';
+                    
+                    // Збираємо всі фотографії товару для галереї
+                    const imageNodes = item.querySelectorAll('image');
+                    let imagesHtml = '';
+                    let imgArray = [];
+                    imageNodes.forEach((imgNode, index) => {
+                        imgArray.push(imgNode.textContent);
+                    });
+
+                    if (imgArray.length === 0) {
+                        imgArray.push('https://i.postimg.cc/B6jdkkTf/ng.jpg');
+                    }
+
+                    imgArray.forEach((imgUrl, index) => {
+                        imagesHtml += `<img src="${imgUrl}" class="product-img ${index === 0 ? 'active' : ''}" data-index="${index}">`;
+                    });
+
+                    // Формуємо картку товару
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative';
+                    card.innerHTML = `
+                        <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">-40% Хіт</div>
+                        <div class="gallery-container relative bg-gray-100 h-64">
+                            ${imagesHtml}
+                            ${imgArray.length > 1 ? `
+                                <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                            ` : ''}
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2 text-gray-900">${name}</h3>
+                                <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs line-clamp-3">
+                                    ${description.replace(/<[^>]*>?/gm, '')}
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                                    <span class="text-2xl font-extrabold text-red-600">${price} ₴</span>
+                                    <span class="text-sm text-gray-400 line-through">${Math.round(price * 1.4)} ₴</span>
+                                </div>
+                                <button onclick="addToCart('${name.replace(/'/g, "")}', ${price})" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                                    <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            } catch (error) {
+                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з фіду. Перевірте підключення.</p>';
+            }
+        }
+
+        // Керування галереєю фото у картці
+        function nextImg(btn) {
+            const container = btn.closest('.gallery-container');
+            const images = container.querySelectorAll('.product-img');
+            let activeIndex = Array.from(images).findIndex(img => img.classList.contains('active'));
+            images[activeIndex].classList.remove('active');
+            activeIndex = (activeIndex + 1) % images.length;
+            images[activeIndex].classList.add('active');
+        }
+
+        function prevImg(btn) {
+            const container = btn.closest('.gallery-container');
+            const images = container.querySelectorAll('.product-img');
+            let activeIndex = Array.from(images).findIndex(img => img.classList.contains('active'));
+            images[activeIndex].classList.remove('active');
+            activeIndex = (activeIndex - 1 + images.length) % images.length;
+            images[activeIndex].classList.add('active');
+        }
+
+        // Кошик та замовлення
         function addToCart(name, price) {
-            cart.push({ name, price });
+            cart.push({ name, price: Number(price) });
             updateCartBadge();
             showToast();
         }
@@ -189,7 +257,6 @@
             
             if (modal.classList.contains('hidden')) {
                 modal.classList.remove('hidden');
-                
                 if (cart.length === 0) {
                     itemsContainer.innerHTML = '<p class="text-center text-gray-500">Ваші санки порожні ❄️</p>';
                     totalContainer.innerText = '0 ₴';
@@ -198,7 +265,7 @@
                     let total = 0;
                     cart.forEach((item, index) => {
                         html += `<div class="flex justify-between items-center mb-3 bg-red-50 p-3 rounded-lg border border-red-100">
-                                    <span class="font-bold">${item.name}</span>
+                                    <span class="font-bold text-sm">${item.name}</span>
                                     <div class="flex items-center gap-3">
                                         <span class="text-red-700 font-bold">${item.price} ₴</span>
                                         <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
@@ -217,90 +284,66 @@
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCartBadge();
-            toggleCart(); // Оновити UI
-            toggleCart(); // Відкрити знову з оновленими даними
+            toggleCart(); 
+            toggleCart(); 
         }
 
-        // Тост (спливаюче вікно)
         function showToast() {
             const toast = document.getElementById('toast');
             toast.style.bottom = '30px';
-            setTimeout(() => {
-                toast.style.bottom = '-100px';
-            }, 3000);
+            setTimeout(() => { toast.style.bottom = '-100px'; }, 3000);
         }
 
-        // Відправка в Telegram
         function sendTelegramOrder(e) {
             e.preventDefault();
-            
-            if (cart.length === 0) {
-                alert("Додайте хоча б один товар у кошик!");
-                return;
-            }
+            if (cart.length === 0) { alert("Додайте хоча б один товар у кошик!"); return; }
 
             const name = document.getElementById('client_name').value;
             const phone = document.getElementById('client_phone').value;
             const delivery = document.getElementById('client_delivery').value;
             
-            let orderText = `🎄 <b>НОВЕ ЗАМОВЛЕННЯ (ToTo ShoP)</b> 🎄\n\n`;
-            orderText += `👤 <b>Клієнт:</b> ${name}\n`;
-            orderText += `📞 <b>Телефон:</b> ${phone}\n`;
-            orderText += `📍 <b>Доставка:</b> ${delivery}\n\n`;
-            orderText += `🛍 <b>Товари:</b>\n`;
-            
+            let orderText = `🎄 <b>НОВЕ ЗАМОВЛЕННЯ (ToTo.Gifts)</b> 🎄\n\n👤 <b>Клієнт:</b> ${name}\n📞 <b>Телефон:</b> ${phone}\n📍 <b>Доставка:</b> ${delivery}\n\n🛍 <b>Товари:</b>\n`;
             let total = 0;
             cart.forEach(item => {
                 orderText += `- ${item.name} (${item.price} ₴)\n`;
                 total += item.price;
             });
-            
-            orderText += `\n💰 <b>Разом до оплати:</b> ${total} ₴`;
+            orderText += `\n💰 <b>Разом:</b> ${total} ₴`;
 
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-            
-            fetch(url, {
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: orderText,
-                    parse_mode: 'HTML'
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("🎉 Дякуємо! Ваше замовлення успішно відправлено ельфам на пакування!");
+                body: JSON.stringify({ chat_id: CHAT_ID, text: orderText, parse_mode: 'HTML' })
+            }).then(res => {
+                if (res.ok) {
+                    alert("🎉 Дякуємо! Замовлення успішно відправлено!");
                     cart = [];
                     updateCartBadge();
                     toggleCart();
                     document.getElementById('order-form').reset();
-                } else {
-                    alert("Помилка відправки. Перевірте CHAT_ID.");
-                }
-            })
-            .catch(error => {
-                alert("Помилка з'єднання!");
+                } else { alert("Помилка відправки."); }
             });
         }
 
-        // Створення сніжинок
+        // Сніг
         function createSnowflakes() {
             const container = document.getElementById('snow-container');
             const flakes = ['❄', '❅', '❆'];
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 25; i++) {
                 let flake = document.createElement('div');
                 flake.className = 'snowflake';
                 flake.innerText = flakes[Math.floor(Math.random() * flakes.length)];
                 flake.style.left = Math.random() * 100 + 'vw';
                 flake.style.animationDuration = (Math.random() * 5 + 5) + 's';
                 flake.style.animationDelay = Math.random() * 5 + 's';
-                flake.style.opacity = Math.random();
-                flake.style.fontSize = (Math.random() * 1 + 0.5) + 'em';
                 container.appendChild(flake);
             }
         }
-        window.onload = createSnowflakes;
+
+        window.onload = () => {
+            createSnowflakes();
+            loadProducts();
+        };
     </script>
 </body>
 </html>
