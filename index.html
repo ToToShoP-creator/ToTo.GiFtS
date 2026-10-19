@@ -27,7 +27,6 @@
         @keyframes fall { 0% { top: -10px; } 100% { top: 100vh; } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(20px); } }
 
-        /* Кнопки та анімації */
         .btn-magic {
             background: linear-gradient(45deg, #e63946, #d90429);
             box-shadow: 0 4px 15px rgba(217, 4, 41, 0.4);
@@ -71,7 +70,7 @@
             <h1 class="text-4xl md:text-6xl text-white festive-title mb-4 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">Новорічна Магія Див!</h1>
             <p class="text-lg md:text-xl text-yellow-300 font-bold drop-shadow-md mb-6">Найкращі подарунки та гаджети для ваших близьких від ToTo.Gifts</p>
             
-            <!-- Пошукова строка на банері -->
+            <!-- Пошукова строка -->
             <div class="relative flex items-center">
                 <input type="text" id="search-input" oninput="handleSearch()" placeholder="Пошук товарів за назвою..." class="w-full bg-white/90 backdrop-blur text-gray-900 font-medium px-6 py-4 rounded-full shadow-2xl focus:outline-none focus:ring-4 focus:ring-yellow-400 text-base">
                 <i class="fa-solid fa-search absolute right-6 text-red-600 text-xl"></i>
@@ -87,32 +86,34 @@
         </div>
 
         <!-- Фільтр по категоріях -->
-        <div id="categories-container" class="flex justify-center items-center gap-2 mb-12 flex-wrap">
-            <!-- Кнопки категорій генеруються автоматично -->
-        </div>
+        <div id="categories-container" class="flex justify-center items-center gap-2 mb-12 flex-wrap"></div>
 
         <!-- Індикатор завантаження -->
         <div id="loading" class="text-center py-12">
             <i class="fa-solid fa-spinner fa-spin text-4xl text-red-600 mb-4"></i>
-            <p class="text-gray-600 font-bold">Завантажуємо святкові товари...</p>
+            <p class="text-gray-600 font-bold">Миттєве завантаження каталогу...</p>
         </div>
 
         <!-- Сітка товарів -->
         <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
 
-        <!-- БЛОК ДЛЯ СТОРІНОК (ПАГІНАЦІЇ) -->
-        <div id="pagination" class="flex justify-center items-center gap-2 mt-16 flex-wrap"></div>
+        <!-- Кнопка "Завантажити ще" (для швидкого поетапного перегляду) -->
+        <div id="load-more-container" class="text-center mt-12 hidden">
+            <button onclick="loadMoreProducts()" class="btn-magic text-white font-bold px-8 py-4 rounded-full text-lg shadow-xl inline-flex items-center gap-2">
+                <i class="fa-solid fa-plus-circle"></i> Завантажити ще товари
+            </button>
+        </div>
     </section>
 
-    <!-- Футер з соцмережами -->
+    <!-- Футер -->
     <footer class="bg-gray-900 text-white py-12 border-t-8 border-red-600">
         <div class="container mx-auto px-4 text-center">
             <h3 class="text-2xl font-bold mb-6 festive-title text-yellow-400">Слідкуйте за нами та замовляйте у месенджерах:</h3>
             <div class="flex justify-center gap-6 mb-8 text-3xl">
                 <a href="https://t.me/toto_shop_ua_bot" target="_blank" class="text-blue-400 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-telegram"></i></a>
                 <a href="https://instagram.com/scrp_lab" target="_blank" class="text-pink-500 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://tiktok.com/@scrp_lab" target="_blank" class="text-white hover:text-gray-300 hover:scale-110 transition"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://www.facebook.com/marketplace/profile/61550282762355/" target="_blank" class="text-blue-600 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-facebook"></i></a>
+                <a href="url?id=3" target="_blank" class="text-white hover:text-gray-300 hover:scale-110 transition"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="url?id=4" target="_blank" class="text-blue-600 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-facebook"></i></a>
             </div>
             <p class="text-lg mb-4"><i class="fa-solid fa-phone text-red-500"></i> +380 99 497 92 41</p>
             <p class="text-gray-500 text-sm">© 2024 ToTo.Gifts. Усі права захищено. Створено з новорічним настроєм 🎄</p>
@@ -142,7 +143,7 @@
 
     <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <!-- СКРИПТ ПОШУКУ, КАТЕГОРІЙ ТА ПАГІНАЦІЇ -->
+    <!-- ОПТИМІЗОВАНИЙ СКРИПТ (ПОРЦІЙНЕ ЗАВАНТАЖЕННЯ) -->
     <script>
         const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
         const CHAT_ID = '6762708096'; 
@@ -151,8 +152,8 @@
         let cart = [];
         let allProducts = [];
         let filteredProducts = [];
-        let currentPage = 1;
-        const productsPerPage = 30;
+        let displayedCount = 0;
+        const batchSize = 30; // Показувати по 30 штук за раз
         let selectedCategory = 'all';
 
         async function loadProducts() {
@@ -169,7 +170,7 @@
                 loader.style.display = 'none';
 
                 renderCategories();
-                renderPage(1);
+                showNextBatch();
 
             } catch (error) {
                 console.error("Помилка:", error);
@@ -177,14 +178,12 @@
             }
         }
 
-        // Генерація кнопок категорій з бази даних
+        // Генерація категорій
         function renderCategories() {
             const container = document.getElementById('categories-container');
-            
-            // Збираємо унікальні категорії
             const categoriesSet = new Set();
             allProducts.forEach(p => {
-                const cat = p['Категорія'] || p['category'] || 'Інше';
+                const cat = p['Категорія'] || p['category'] || '';
                 if(cat) categoriesSet.add(cat);
             });
 
@@ -192,27 +191,22 @@
 
             categoriesSet.forEach(cat => {
                 const isActive = selectedCategory === cat;
-                html += `<button onclick="filterByCategory('${cat}')" class="px-5 py-2.5 rounded-full font-bold transition shadow-md ${isActive ? 'bg-red-600 text-white' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-600'}">Категорія ${cat}</button>`;
+                html += `<button onclick="filterByCategory('${cat}')" class="px-5 py-2.5 rounded-full font-bold transition shadow-md ${isActive ? 'bg-red-600 text-white' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-600'}">${cat}</button>`;
             });
 
             container.innerHTML = html;
         }
 
-        // Фільтрація по категорії
         function filterByCategory(category) {
             selectedCategory = category;
-            currentPage = 1;
             applyFilters();
             renderCategories();
         }
 
-        // Пошук в реальному часі
         function handleSearch() {
-            currentPage = 1;
             applyFilters();
         }
 
-        // Застосування пошуку та категорій одночасно
         function applyFilters() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
 
@@ -226,26 +220,29 @@
                 return matchesCategory && matchesSearch;
             });
 
-            renderPage(1);
+            displayedCount = 0;
+            document.getElementById('products-grid.innerHTML = ''');
+            showNextBatch();
         }
 
-        // Відображення сторінки з товарами
-        function renderPage(pageNumber) {
-            currentPage = pageNumber;
+        // Поетапне виведення порціями (щоб сайт не гальмував)
+        function showNextBatch() {
             const grid = document.getElementById('products-grid');
-            grid.innerHTML = '';
+            const loadMoreBtn = document.getElementById('load-more-container');
+            
+            if (displayedCount === 0) {
+                grid.innerHTML = '';
+            }
 
             if (filteredProducts.length === 0) {
                 grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500 text-xl font-bold">Нічого не знайдено ❄️ Спробуйте інший запит</div>';
-                document.getElementById('pagination').innerHTML = '';
+                loadMoreBtn.style.display = 'none';
                 return;
             }
 
-            const start = (currentPage - 1) * productsPerPage;
-            const end = start + productsPerPage;
-            const productsToShow = filteredProducts.slice(start, end);
-
-            productsToShow.forEach(product => {
+            const nextBatch = filteredProducts.slice(displayedCount, displayedCount + batchSize);
+            
+            nextBatch.forEach(product => {
                 const name = product['Назва'] || product['name'] || 'Спеціальна пропозиція';
                 const price = parseFloat(product['Ціна'] || product['price']) || 0;
                 
@@ -286,36 +283,18 @@
                 grid.appendChild(card);
             });
 
-            renderPagination();
-            document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+            displayedCount += nextBatch.length;
+
+            // Показувати чи ховати кнопку "Завантажити ще"
+            if (displayedCount < filteredProducts.length) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
         }
 
-        // Кнопки пагінації сторінок
-        function renderPagination() {
-            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-            const container = document.getElementById('pagination');
-            container.innerHTML = '';
-
-            if (totalPages <= 1) return;
-
-            if (currentPage > 1) {
-                container.innerHTML += `<button onclick="renderPage(${currentPage - 1})" class="px-4 py-2 bg-white text-red-600 font-bold border-2 border-red-200 rounded-xl hover:border-red-600 transition"><i class="fa-solid fa-chevron-left"></i> Назад</button>`;
-            }
-
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, currentPage + 2);
-
-            for (let i = startPage; i <= endPage; i++) {
-                if (i === currentPage) {
-                    container.innerHTML += `<button class="px-4 py-2 bg-red-600 text-white font-bold border-2 border-red-600 rounded-xl shadow-lg">${i}</button>`;
-                } else {
-                    container.innerHTML += `<button onclick="renderPage(${i})" class="px-4 py-2 bg-white text-gray-700 font-bold border-2 border-gray-200 rounded-xl hover:border-red-600 transition">${i}</button>`;
-                }
-            }
-
-            if (currentPage < totalPages) {
-                container.innerHTML += `<button onclick="renderPage(${currentPage + 1})" class="px-4 py-2 bg-white text-red-600 font-bold border-2 border-red-200 rounded-xl hover:border-red-600 transition">Далі <i class="fa-solid fa-chevron-right"></i></button>`;
-            }
+        function loadMoreProducts() {
+            showNextBatch();
         }
 
         function nextImg(btn) {
@@ -395,7 +374,7 @@
             }).then(res => {
                 if (res.ok) {
                     alert("🎉 Дякуємо! Замовлення успішно відправлено!");
-                    cart = []; updateCartBadge(); toggleCart(); document.getElementById('order-form'].reset();
+                    cart = []; updateCartBadge(); toggleCart(); document.getElementById('order-form').reset();
                 } else { alert("Помилка відправки."); }
             });
         }
