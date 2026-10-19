@@ -162,36 +162,12 @@
 
     <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <!-- СКРИПТ ЗІ СЛОВНИКОМ КАТЕГОРІЙ -->
+    <!-- СКРИПТ КАТАЛОГУ -->
     <script>
         const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
         const CHAT_ID = '6762708096'; 
-        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbw1a_503SRYl4OdXy52kFP2H44U9jkSN_v5i80O0T53G0Jbort28Sn7prv0snnSIdNrwQ/exec';
-
-        // Словник відповідності ID категорій їх гарним назвам з Dropt
-        const categoryNames = {
-            '60': 'Автотовари',
-            '68': 'Електроніка',
-            '70': 'Новий Рік',
-            '81': 'Побутова техніка',
-            '89': 'Краса і здоров\'я',
-            '101': 'Товари для дому',
-            '105': 'Товари для дітей',
-            '149': 'Рюкзаки, сумки',
-            '227': 'Туризм і спорт',
-            '261': 'Акустика',
-            '266': 'Товари для тварин',
-            '303': 'TV-SHOP',
-            '330': 'Інструменти',
-            '331': 'LED вивіски',
-            '432': 'Гаджети'
-        };
-
-        // Функція для отримання красивої назви категорії
-        function getCategoryName(catId) {
-            const cleanId = String(catId).trim();
-            return categoryNames[cleanId] || (cleanId ? `Категорія ${cleanId}` : 'Інше');
-        }
+        // Ваше актуальне посилання на новий веб-додаток Apps Script
+        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxcJKguO7lKfUC0C_KON2KKscM_QIpkqob59kelY3cxipeTuq9hUwRATZQL7luRL4WzcQ/exec';
 
         let cart = [];
         let allProducts = [];
@@ -227,16 +203,18 @@
             const categoriesSet = new Set();
             
             allProducts.forEach(p => {
-                const catId = p['Категорія'] || p['category'] || '';
-                if(catId) categoriesSet.add(String(catId).trim());
+                const cat = p['Категорія'] || p['category'] || 'Подарунки та різне';
+                // Відсіюємо випадкові цифри, якщо такі залишилися
+                if(cat && !/^[\d\s]+$/.test(cat)) {
+                    categoriesSet.add(String(cat).trim());
+                }
             });
 
             let html = `<button onclick="filterByCategory('all')" class="px-5 py-2.5 rounded-full font-bold transition shadow-md ${selectedCategory === 'all' ? 'bg-red-600 text-white' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-600'}">Усі товари 🎄</button>`;
 
-            categoriesSet.forEach(catId => {
-                const isActive = selectedCategory === catId;
-                const catName = getCategoryName(catId);
-                html += `<button onclick="filterByCategory('${catId}')" class="px-5 py-2.5 rounded-full font-bold transition shadow-md ${isActive ? 'bg-red-600 text-white' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-600'}">${catName}</button>`;
+            categoriesSet.forEach(cat => {
+                const isActive = selectedCategory === cat;
+                html += `<button onclick="filterByCategory('${cat}')" class="px-5 py-2.5 rounded-full font-bold transition shadow-md ${isActive ? 'bg-red-600 text-white' : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-600'}">${cat}</button>`;
             });
 
             container.innerHTML = html;
