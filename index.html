@@ -76,7 +76,7 @@
         </div>
     </section>
 
-    <!-- Каталог -->
+    <!-- Каталог товарів -->
     <section id="catalog" class="py-20 container mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-extrabold text-red-700 mb-2 festive-title">Святковий Каталог Хітів 🎄</h2>
@@ -92,6 +92,9 @@
 
         <!-- Сітка товарів -->
         <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+
+        <!-- БЛОК ДЛЯ СТОРІНОК (ПАГІНАЦІЇ) -->
+        <div id="pagination" class="flex justify-center items-center gap-2 mt-16 flex-wrap"></div>
     </section>
 
     <!-- Футер з соцмережами -->
@@ -132,19 +135,20 @@
 
     <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <!-- СКРИПТ ЗАВАНТАЖЕННЯ ТОВАРІВ З GOOGLE ТАБЛИЦІ -->
+    <!-- СКРИПТ З ПАГІНАЦІЄЮ ТОВАРІВ З GOOGLE ТАБЛИЦІ -->
     <script>
         const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
         const CHAT_ID = '6762708096'; 
-        
         const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbzq9bOkWRMUb_pQ9xvKBW-XItcL75aagrYarSseJyOWYapa26u5boOsncVb5v5awkKaKQ/exec';
 
         let cart = [];
+        let allProducts = []; // Всі товари з бази
+        let currentPage = 1;
+        const productsPerPage = 30; // Кількість товарів на одній сторінці
 
+        // Завантаження бази даних (один раз)
         async function loadProducts() {
-            const grid = document.getElementById('products-grid');
             const loader = document.getElementById('loading');
-            
             try {
                 const response = await fetch(SHEET_API_URL);
                 if (!response.ok) throw new Error('Помилка завантаження');
@@ -152,62 +156,121 @@
                 
                 if (!products || products.length === 0) throw new Error("Товари не знайдено у таблиці");
 
+                allProducts = products; // Зберігаємо всі 700+ товарів
                 loader.style.display = 'none';
-                grid.innerHTML = '';
+                
+                // Відображаємо першу сторінку
+                renderPage(1);
 
-                // Беремо перші 50 товарів
-                const limit = Math.min(products.length, 50);
-                for (let i = 0; i < limit; i++) {
-                    const product = products[i];
-                    
-                    // Зчитуємо дані з колонок таблиці
-                    const name = product['Назва'] || product['name'] || 'Спеціальна пропозиція';
-                    const price = parseFloat(product['Ціна'] || product['price']) || 0;
-                    
-                    // Обробляємо фото (навіть якщо їх кілька через кому)
-                    const photoUrls = product['Посилання на фото'] || product['picture'] || '';
-                    let imgArray = photoUrls.split(',').map(u => u.trim()).filter(u => u !== '');
-                    if (imgArray.length === 0) imgArray.push('https://i.postimg.cc/B6jdkkTf/ng.jpg');
-
-                    let imagesHtml = '';
-                    imgArray.forEach((imgUrl, index) => {
-                        imagesHtml += `<img src="${imgUrl}" class="product-img ${index === 0 ? 'active' : ''}" data-index="${index}">`;
-                    });
-
-                    const card = document.createElement('div');
-                    card.className = 'bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative';
-                    card.innerHTML = `
-                        <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">Топ продажів</div>
-                        <div class="gallery-container relative bg-gray-100 h-64">
-                            ${imagesHtml}
-                            ${imgArray.length > 1 ? `
-                                <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
-                                <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
-                            ` : ''}
-                        </div>
-                        <div class="p-6 flex-1 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-xl font-bold mb-2 text-gray-900">${name}</h3>
-                            </div>
-                            <div class="mt-4">
-                                <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
-                                    <span class="text-2xl font-extrabold text-red-600">${price} ₴</span>
-                                </div>
-                                <button onclick="addToCart('${name.replace(/'/g, "")}', ${price})" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
-                                    <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                }
             } catch (error) {
                 console.error("Помилка:", error);
                 loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з таблиці. Перевірте посилання.</p>';
             }
         }
 
-        // --- УСІ ІНШІ ФУНКЦІЇ ЗАЛИШАЮТЬСЯ БЕЗ ЗМІН ---
+        // Відображення конкретної сторінки
+        function renderPage(pageNumber) {
+            currentPage = pageNumber;
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            // Вираховуємо які товари показувати (напр. з 0 по 30)
+            const start = (currentPage - 1) * productsPerPage;
+            const end = start + productsPerPage;
+            const productsToShow = allProducts.slice(start, end);
+
+            // Генеруємо HTML для товарів
+            productsToShow.forEach(product => {
+                const name = product['Назва'] || product['name'] || 'Спеціальна пропозиція';
+                const price = parseFloat(product['Ціна'] || product['price']) || 0;
+                
+                const photoUrls = product['Посилання на фото'] || product['picture'] || '';
+                let imgArray = photoUrls.split(',').map(u => u.trim()).filter(u => u !== '');
+                if (imgArray.length === 0) imgArray.push('https://i.postimg.cc/B6jdkkTf/ng.jpg');
+
+                let imagesHtml = '';
+                imgArray.forEach((imgUrl, index) => {
+                    imagesHtml += `<img src="${imgUrl}" class="product-img ${index === 0 ? 'active' : ''}" data-index="${index}">`;
+                });
+
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative';
+                card.innerHTML = `
+                    <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">Топ продажів</div>
+                    <div class="gallery-container relative bg-gray-100 h-64">
+                        ${imagesHtml}
+                        ${imgArray.length > 1 ? `
+                            <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                        ` : ''}
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold mb-2 text-gray-900 leading-tight">${name}</h3>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                                <span class="text-2xl font-extrabold text-red-600">${price} ₴</span>
+                            </div>
+                            <!-- Замінюємо лапки у назві для безпечної передачі у кошик -->
+                            <button onclick="addToCart('${name.replace(/['"]/g, "")}', ${price})" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                                <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Відмальовуємо кнопки сторінок
+            renderPagination();
+            
+            // Плавний скрол до початку каталогу після перемикання сторінки
+            document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Відображення кнопок пагінації (1, 2, 3...)
+        function renderPagination() {
+            const totalPages = Math.ceil(allProducts.length / productsPerPage);
+            const container = document.getElementById('pagination');
+            container.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            // Кнопка "Попередня"
+            if (currentPage > 1) {
+                container.innerHTML += `<button onclick="renderPage(${currentPage - 1})" class="px-4 py-2 bg-white text-red-600 font-bold border-2 border-red-200 rounded-xl hover:border-red-600 transition"><i class="fa-solid fa-chevron-left"></i> Назад</button>`;
+            }
+
+            // Розумний вивід сторінок (щоб не показувати одразу 30 кнопок)
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+
+            if (startPage > 1) {
+                container.innerHTML += `<button onclick="renderPage(1)" class="px-4 py-2 bg-white text-gray-700 font-bold border-2 border-gray-200 rounded-xl hover:border-red-600 transition">1</button>`;
+                if (startPage > 2) container.innerHTML += `<span class="px-2 py-2 text-gray-400 font-bold">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === currentPage) {
+                    container.innerHTML += `<button class="px-4 py-2 bg-red-600 text-white font-bold border-2 border-red-600 rounded-xl shadow-lg">${i}</button>`;
+                } else {
+                    container.innerHTML += `<button onclick="renderPage(${i})" class="px-4 py-2 bg-white text-gray-700 font-bold border-2 border-gray-200 rounded-xl hover:border-red-600 transition">${i}</button>`;
+                }
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) container.innerHTML += `<span class="px-2 py-2 text-gray-400 font-bold">...</span>`;
+                container.innerHTML += `<button onclick="renderPage(${totalPages})" class="px-4 py-2 bg-white text-gray-700 font-bold border-2 border-gray-200 rounded-xl hover:border-red-600 transition">${totalPages}</button>`;
+            }
+
+            // Кнопка "Наступна"
+            if (currentPage < totalPages) {
+                container.innerHTML += `<button onclick="renderPage(${currentPage + 1})" class="px-4 py-2 bg-white text-red-600 font-bold border-2 border-red-200 rounded-xl hover:border-red-600 transition">Далі <i class="fa-solid fa-chevron-right"></i></button>`;
+            }
+        }
+
+        // Керування галереєю
         function nextImg(btn) {
             const container = btn.closest('.gallery-container');
             const images = container.querySelectorAll('.product-img');
@@ -226,6 +289,7 @@
             images[activeIndex].classList.add('active');
         }
 
+        // Кошик
         function addToCart(name, price) {
             cart.push({ name, price: Number(price) });
             updateCartBadge();
