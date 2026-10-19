@@ -132,7 +132,7 @@
 
     <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <!-- СКРИПТ СТАБІЛЬНОГО ЗАВАНТАЖЕННЯ ФІДУ -->
+    <!-- СКРИПТ СТАБІЛЬНОГО ЗАВАНТАЖЕННЯ ФІДУ PROM.UA -->
     <script>
         const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
         const CHAT_ID = '6762708096'; 
@@ -145,26 +145,42 @@
             const loader = document.getElementById('loading');
             
             try {
-                // Використовуємо надійний швидкий шлюз для зчитування XML безпосередньо
-                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(FEED_URL);
+                // Використовуємо надійний JSON-шлюз для обходу блокування CORS
+                const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(FEED_URL);
                 const response = await fetch(proxyUrl);
-                const text = await response.text();
+                const data = await response.json();
                 
+                if (!data.contents) throw new Error("Фід порожній або недоступний");
+
                 const parser = new DOMParser();
-                const xml = parser.parseFromString(text, 'text/xml');
-                const items = xml.querySelectorAll('item');
+                const xml = parser.parseFromString(data.contents, 'text/xml');
                 
+                // У форматі Prom.ua товари лежать у тегах <offer>
+                let items = xml.querySelectorAll('offer');
+                if (items.length === 0) items = xml.querySelectorAll('item'); // резервний варіант
+                
+                if (items.length === 0) throw new Error("Товари не знайдено");
+
                 loader.style.display = 'none';
                 grid.innerHTML = '';
 
+                // Беремо перші 30 товарів
                 const limit = Math.min(items.length, 30);
                 for (let i = 0; i < limit; i++) {
                     const item = items[i];
                     const name = item.querySelector('name')?.textContent || 'Святковий товар';
-                    const price = item.querySelector('price')?.textContent || '500';
-                    const description = item.querySelector('description')?.textContent || 'Якісний товар з швидкою доставкою по Україні!';
                     
-                    const imageNodes = item.querySelectorAll('image');
+                    // Ціна
+                    const priceText = item.querySelector('price')?.textContent || '500';
+                    const price = parseFloat(priceText);
+                    
+                    // Опис
+                    const description = item.querySelector('description')?.textContent || 'Якісний товар зі швидкою доставкою по Україні!';
+                    
+                    // У форматі Prom.ua картинки лежать у тегах <picture>
+                    let imageNodes = item.querySelectorAll('picture');
+                    if (imageNodes.length === 0) imageNodes = item.querySelectorAll('image');
+                    
                     let imagesHtml = '';
                     let imgArray = [];
                     imageNodes.forEach((imgNode) => {
@@ -194,7 +210,7 @@
                             <div>
                                 <h3 class="text-xl font-bold mb-2 text-gray-900">${name}</h3>
                                 <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-xl mb-4 text-gray-700 text-xs line-clamp-3">
-                                    ${description.replace(/<[^>]*>?/gm, '')}
+                                    ${description.replace(/<[^>]*>?/gm, '').substring(0, 150)}...
                                 </div>
                             </div>
                             <div>
@@ -211,7 +227,8 @@
                     grid.appendChild(card);
                 }
             } catch (error) {
-                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з фіду. Будь ласка, оновіть сторінку через хвилину.</p>';
+                console.error("Деталі помилки:", error);
+                loader.innerHTML = '<p class="text-red-600 font-bold">На жаль, Dropt блокує пряме зчитування. <br>Додайте товари вручну або використайте платформу Prom.</p>';
             }
         }
 
