@@ -82,7 +82,7 @@
     <section id="catalog" class="py-16 container mx-auto px-4">
         <div class="text-center mb-10">
             <h2 class="text-4xl font-extrabold text-red-700 mb-2 festive-title">Святковий Каталог Хітів 🎄</h2>
-            <p class="text-gray-600">Обирайте найкращі гаджети та подарунки за вигідними цінами!</p>
+            <p class="text-gray-600">Обирайте найкращі подарунки! Натисніть на товар для перегляду деталей.</p>
         </div>
 
         <!-- Фільтр по категоріях -->
@@ -91,19 +91,38 @@
         <!-- Індикатор завантаження -->
         <div id="loading" class="text-center py-12">
             <i class="fa-solid fa-spinner fa-spin text-4xl text-red-600 mb-4"></i>
-            <p class="text-gray-600 font-bold">Миттєве завантаження каталогу...</p>
+            <p class="text-gray-600 font-bold">Завантаження товарів з бази...</p>
         </div>
 
         <!-- Сітка товарів -->
         <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
 
-        <!-- Кнопка "Завантажити ще" (для швидкого поетапного перегляду) -->
+        <!-- Кнопка "Завантажити ще" -->
         <div id="load-more-container" class="text-center mt-12 hidden">
             <button onclick="loadMoreProducts()" class="btn-magic text-white font-bold px-8 py-4 rounded-full text-lg shadow-xl inline-flex items-center gap-2">
                 <i class="fa-solid fa-plus-circle"></i> Завантажити ще товари
             </button>
         </div>
     </section>
+
+    <!-- МОДАЛЬНЕ ВІКНО ДЛЯ ОПИСУ -->
+    <div id="product-modal" class="fixed inset-0 bg-black/70 z-[150] hidden flex justify-center items-center backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto border-4 border-red-600">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-600 text-3xl z-10"><i class="fa-solid fa-xmark"></i></button>
+            <div id="modal-gallery" class="gallery-container relative bg-gray-100 h-72 rounded-2xl overflow-hidden mb-6"></div>
+            <h2 id="modal-title" class="text-2xl font-bold text-gray-900 mb-3"></h2>
+            <div class="flex justify-between items-center mb-6 bg-red-50 p-4 rounded-xl">
+                <span id="modal-price" class="text-3xl font-extrabold text-red-600"></span>
+                <button id="modal-buy-btn" class="btn-magic text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2">
+                    <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                </button>
+            </div>
+            <div>
+                <h4 class="font-bold text-gray-800 mb-2 border-b pb-1">Детальний опис товару:</h4>
+                <div id="modal-desc" class="text-gray-600 text-sm space-y-2 leading-relaxed"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- Футер -->
     <footer class="bg-gray-900 text-white py-12 border-t-8 border-red-600">
@@ -112,8 +131,8 @@
             <div class="flex justify-center gap-6 mb-8 text-3xl">
                 <a href="https://t.me/toto_shop_ua_bot" target="_blank" class="text-blue-400 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-telegram"></i></a>
                 <a href="https://instagram.com/scrp_lab" target="_blank" class="text-pink-500 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-instagram"></i></a>
-                <a href="url?id=3" target="_blank" class="text-white hover:text-gray-300 hover:scale-110 transition"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="url?id=4" target="_blank" class="text-blue-600 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://tiktok.com/@scrp_lab" target="_blank" class="text-white hover:text-gray-300 hover:scale-110 transition"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.facebook.com/marketplace/profile/61550282762355/" target="_blank" class="text-blue-600 hover:text-white hover:scale-110 transition"><i class="fa-brands fa-facebook"></i></a>
             </div>
             <p class="text-lg mb-4"><i class="fa-solid fa-phone text-red-500"></i> +380 99 497 92 41</p>
             <p class="text-gray-500 text-sm">© 2024 ToTo.Gifts. Усі права захищено. Створено з новорічним настроєм 🎄</p>
@@ -143,17 +162,18 @@
 
     <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <!-- ОПТИМІЗОВАНИЙ СКРИПТ (ПОРЦІЙНЕ ЗАВАНТАЖЕННЯ) -->
+    <!-- СКРИПТ ПОРЦІЙНОГО ЗАВАНТАЖЕННЯ З НОВИМ ПОСИЛАННЯМ -->
     <script>
         const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
         const CHAT_ID = '6762708096'; 
-        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbzq9bOkWRMUb_pQ9xvKBW-XItcL75aagrYarSseJyOWYapa26u5boOsncVb5v5awkKaKQ/exec';
+        // Ваше нове правильне посилання на веб-додаток Apps Script
+        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbwWUnNJynf0LWwS6stIp6r0oalz1Id85wHze5nlhJ8lKfsNysBJxr5w6-s-wYHXqfwVog/exec';
 
         let cart = [];
         let allProducts = [];
         let filteredProducts = [];
         let displayedCount = 0;
-        const batchSize = 30; // Показувати по 30 штук за раз
+        const batchSize = 30; // Порції по 30 штук для ідеальної швидкості
         let selectedCategory = 'all';
 
         async function loadProducts() {
@@ -174,11 +194,10 @@
 
             } catch (error) {
                 console.error("Помилка:", error);
-                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з таблиці.</p>';
+                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з таблиці. Перевірте з'єднання.</p>';
             }
         }
 
-        // Генерація категорій
         function renderCategories() {
             const container = document.getElementById('categories-container');
             const categoriesSet = new Set();
@@ -221,18 +240,13 @@
             });
 
             displayedCount = 0;
-            document.getElementById('products-grid.innerHTML = ''');
+            document.getElementById('products-grid').innerHTML = '';
             showNextBatch();
         }
 
-        // Поетапне виведення порціями (щоб сайт не гальмував)
         function showNextBatch() {
             const grid = document.getElementById('products-grid');
             const loadMoreBtn = document.getElementById('load-more-container');
-            
-            if (displayedCount === 0) {
-                grid.innerHTML = '';
-            }
 
             if (filteredProducts.length === 0) {
                 grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500 text-xl font-bold">Нічого не знайдено ❄️ Спробуйте інший запит</div>';
@@ -242,7 +256,8 @@
 
             const nextBatch = filteredProducts.slice(displayedCount, displayedCount + batchSize);
             
-            nextBatch.forEach(product => {
+            nextBatch.forEach((product, idx) => {
+                const globalIndex = displayedCount + idx;
                 const name = product['Назва'] || product['name'] || 'Спеціальна пропозиція';
                 const price = parseFloat(product['Ціна'] || product['price']) || 0;
                 
@@ -256,25 +271,26 @@
                 });
 
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative';
+                card.className = 'bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative cursor-pointer hover:shadow-2xl transition';
                 card.innerHTML = `
                     <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">Топ продажів</div>
-                    <div class="gallery-container relative bg-gray-100 h-64">
+                    <div class="gallery-container relative bg-gray-100 h-64" onclick="openProductModal(${globalIndex})">
                         ${imagesHtml}
                         ${imgArray.length > 1 ? `
-                            <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
-                            <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                            <button onclick="event.stopPropagation(); prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/85 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="event.stopPropagation(); nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/85 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
                         ` : ''}
                     </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div class="p-6 flex-1 flex flex-col justify-between" onclick="openProductModal(${globalIndex})">
                         <div>
-                            <h3 class="text-lg font-bold mb-2 text-gray-900 leading-tight">${name}</h3>
+                            <h3 class="text-lg font-bold mb-2 text-gray-900 leading-tight hover:text-red-600 transition">${name}</h3>
                         </div>
                         <div class="mt-4">
                             <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
                                 <span class="text-2xl font-extrabold text-red-600">${price} ₴</span>
+                                <span class="text-xs text-red-700 font-bold underline">Детальніше</span>
                             </div>
-                            <button onclick="addToCart('${name.replace(/['"]/g, "")}', ${price})" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                            <button onclick="event.stopPropagation(); addToCart('${name.replace(/['"]/g, "")}', ${price})" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
                                 <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
                             </button>
                         </div>
@@ -285,7 +301,6 @@
 
             displayedCount += nextBatch.length;
 
-            // Показувати чи ховати кнопку "Завантажити ще"
             if (displayedCount < filteredProducts.length) {
                 loadMoreBtn.style.display = 'block';
             } else {
@@ -295,6 +310,47 @@
 
         function loadMoreProducts() {
             showNextBatch();
+        }
+
+        function openProductModal(index) {
+            const product = filteredProducts[index];
+            if (!product) return;
+
+            const name = product['Назва'] || product['name'] || 'Спеціальна пропозиція';
+            const price = parseFloat(product['Ціна'] || product['price']) || 0;
+            const description = product['Опис'] || product['description'] || 'Опис відсутній. Зверніться до менеджера для уточнення деталей.';
+
+            const photoUrls = product['Посилання на фото'] || product['picture'] || '';
+            let imgArray = photoUrls.split(',').map(u => u.trim()).filter(u => u !== '');
+            if (imgArray.length === 0) imgArray.push('https://i.postimg.cc/B6jdkkTf/ng.jpg');
+
+            let modalGalleryHtml = '';
+            imgArray.forEach((imgUrl, index) => {
+                modalGalleryHtml += `<img src="${imgUrl}" class="product-img ${index === 0 ? 'active' : ''}" data-index="${index}">`;
+            });
+            if (imgArray.length > 1) {
+                modalGalleryHtml += `
+                    <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/85 hover:bg-white text-red-700 rounded-full w-9 h-9 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/85 hover:bg-white text-red-700 rounded-full w-9 h-9 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                `;
+            }
+
+            document.getElementById('modal-gallery').innerHTML = modalGalleryHtml;
+            document.getElementById('modal-title').innerText = name;
+            document.getElementById('modal-price').innerText = price + ' ₴';
+            document.getElementById('modal-desc').innerHTML = description;
+            
+            const buyBtn = document.getElementById('modal-buy-btn');
+            buyBtn.onclick = () => {
+                addToCart(name.replace(/['"]/g, ""), price);
+                closeProductModal();
+            };
+
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.add('hidden');
         }
 
         function nextImg(btn) {
@@ -379,6 +435,7 @@
             });
         }
 
+        // Генерація сніжинок
         function createSnowflakes() {
             const container = document.getElementById('snow-container');
             const flakes = ['❄', '❅', '❆'];
@@ -393,7 +450,10 @@
             }
         }
 
-        window.onload = () => { createSnowflakes(); loadProducts(); };
+        window.onload = () => { 
+            createSnowflakes(); 
+            loadProducts(); 
+        };
     </script>
 </body>
 </html>
