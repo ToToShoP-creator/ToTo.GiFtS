@@ -162,18 +162,18 @@
 
     <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
-    <!-- СКРИПТ ПОРЦІЙНОГО ЗАВАНТАЖЕННЯ З НОВИМ ПОСИЛАННЯМ -->
+    <!-- СКРИПТ ПОРЦІЙНОГО ЗАВАНТАЖЕННЯ -->
     <script>
         const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
         const CHAT_ID = '6762708096'; 
-        // Ваше нове правильне посилання на веб-додаток Apps Script
-        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbze6n20veqpPcqQIWdHmo-B0JIUUjf6egjoxlKmqBrlaf85A2hnHEubc3-wVxEJNjRfvg/exec';
+        // Посилання на ваш оновлений веб-додаток Google Apps Script
+        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbw1a_503SRYl4OdXy52kFP2H44U9jkSN_v5i80O0T53G0Jbort28Sn7prv0snnSIdNrwQ/exec';
 
         let cart = [];
         let allProducts = [];
         let filteredProducts = [];
         let displayedCount = 0;
-        const batchSize = 30; // Порції по 30 штук для ідеальної швидкості
+        const batchSize = 30; // Порції по 30 товарів для миттєвого завантаження
         let selectedCategory = 'all';
 
         async function loadProducts() {
@@ -194,7 +194,7 @@
 
             } catch (error) {
                 console.error("Помилка:", error);
-                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з таблиці. Перевірте з'єднання.</p>';
+                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з таблиці. Перевірте з\'єднання.</p>';
             }
         }
 
