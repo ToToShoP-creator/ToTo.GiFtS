@@ -133,70 +133,178 @@
     <button onclick="window.scrollTo(0,0)" class="fixed bottom-6 right-6 bg-yellow-400 text-red-900 w-12 h-12 rounded-full shadow-lg flex justify-center items-center text-xl hover:bg-yellow-300 transition z-40 border-2 border-white"><i class="fa-solid fa-arrow-up"></i></button>
 
     <!-- СКРИПТ ЗАВАНТАЖЕННЯ ТОВАРІВ З GOOGLE ТАБЛИЦІ -->
-<script>
-    const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
-    const CHAT_ID = '6762708096';
-    // Ваше унікальне посилання на створений Веб-додаток Apps Script
-   const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbw549s1JmcAQTQelmOhOIDQMXSF1RYesqkB3Cwfs39h1P3_2IeAfcUWQ_99sgr9QyA3uQ/exec';
-
-    let cart = [];
-
-    async function loadProducts() {
-        const grid = document.getElementById('products-grid');
-        const loader = document.getElementById('loading');
+    <script>
+        const BOT_TOKEN = '8819560143:AAHzuTDzQtQt507NodVxs5wmjrzaG9wsb_c';
+        const CHAT_ID = '6762708096'; 
         
-        try {
-            const response = await fetch(SHEET_API_URL);
-            const products = await response.json();
-            
-            if (!products || products.length === 0) {
-                throw new Error("Таблиця порожня або немає даних");
-            }
-            
-            if (loader) loader.style.display = 'none';
-            grid.innerHTML = '';
-            
-            // Проходимо по кожному товару з Google Таблиці
-            products.forEach(item => {
-                // Назви стовпчиків у таблиці мають відповідати цим ключам
-                const name = item['Назва'] || item['name'] || 'Святковий товар';
-                const price = parseFloat(item['Ціна'] || item['price'] || 0);
-                const imageUrl = item['Посилання на фото'] || item['picture'] || 'https://i.postimg.cc/B6jdkkTf/ng.jpg';
-                const description = item['Категорія'] ? `Категорія: ${item['Категорія']}` : 'Якісний товар зі швидкою доставкою по Україні!';
+        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbzq9bOkWRMUb_pQ9xvKBW-XItcL75aagrYarSseJyOWYapa26u5boOsncVb5v5awkKaKQ/exec';
 
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative';
-                card.innerHTML = `
-                    <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">Хіт</div>
-                    <div class="gallery-container relative bg-gray-100 h-64">
-                        <img src="${imageUrl}" class="product-img active w-full h-full object-cover" onerror="this.src='https://i.postimg.cc/B6jdkkTf/ng.jpg'">
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col justify-between">
-                        <div>
-                            <h3 class="text-xl font-bold mb-2 text-gray-900">${name}</h3>
-                            <p class="text-gray-600 text-sm mb-4 line-clamp-2">${description}</p>
+        let cart = [];
+
+        async function loadProducts() {
+            const grid = document.getElementById('products-grid');
+            const loader = document.getElementById('loading');
+            
+            try {
+                const response = await fetch(SHEET_API_URL);
+                if (!response.ok) throw new Error('Помилка завантаження');
+                const products = await response.json();
+                
+                if (!products || products.length === 0) throw new Error("Товари не знайдено у таблиці");
+
+                loader.style.display = 'none';
+                grid.innerHTML = '';
+
+                // Беремо перші 50 товарів
+                const limit = Math.min(products.length, 50);
+                for (let i = 0; i < limit; i++) {
+                    const product = products[i];
+                    
+                    // Зчитуємо дані з колонок таблиці
+                    const name = product['Назва'] || product['name'] || 'Спеціальна пропозиція';
+                    const price = parseFloat(product['Ціна'] || product['price']) || 0;
+                    
+                    // Обробляємо фото (навіть якщо їх кілька через кому)
+                    const photoUrls = product['Посилання на фото'] || product['picture'] || '';
+                    let imgArray = photoUrls.split(',').map(u => u.trim()).filter(u => u !== '');
+                    if (imgArray.length === 0) imgArray.push('https://i.postimg.cc/B6jdkkTf/ng.jpg');
+
+                    let imagesHtml = '';
+                    imgArray.forEach((imgUrl, index) => {
+                        imagesHtml += `<img src="${imgUrl}" class="product-img ${index === 0 ? 'active' : ''}" data-index="${index}">`;
+                    });
+
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-red-100 flex flex-col justify-between relative';
+                    card.innerHTML = `
+                        <div class="absolute top-4 left-4 bg-yellow-400 text-red-900 font-extrabold px-3 py-1 rounded-full z-10 shadow">Топ продажів</div>
+                        <div class="gallery-container relative bg-gray-100 h-64">
+                            ${imagesHtml}
+                            ${imgArray.length > 1 ? `
+                                <button onclick="prevImg(this)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button onclick="nextImg(this)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-red-700 rounded-full w-8 h-8 flex justify-center items-center shadow"><i class="fa-solid fa-chevron-right"></i></button>
+                            ` : ''}
                         </div>
-                        <div>
-                            <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
-                                <span class="text-2xl font-extrabold text-red-600">${price} ₴</span>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-xl font-bold mb-2 text-gray-900">${name}</h3>
                             </div>
-                            <button onclick="addToCart('${name.replace(/'/g, "")}', ${price})" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
-                                <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
-                            </button>
+                            <div class="mt-4">
+                                <div class="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                                    <span class="text-2xl font-extrabold text-red-600">${price} ₴</span>
+                                </div>
+                                <button onclick="addToCart('${name.replace(/'/g, "")}', ${price})" class="w-full btn-magic text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2">
+                                    <i class="fa-solid fa-cart-plus"></i> В санки (Купити)
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            
-        } catch (error) {
-            console.error("Помилка завантаження товарів:", error);
-            if (loader) loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з таблиці.</p>';
+                    `;
+                    grid.appendChild(card);
+                }
+            } catch (error) {
+                console.error("Помилка:", error);
+                loader.innerHTML = '<p class="text-red-600 font-bold">Не вдалося завантажити товари з таблиці. Перевірте посилання.</p>';
+            }
         }
-    }
 
-    // Запускаємо завантаження при відкритті сайту
-    document.addEventListener('DOMContentLoaded', loadProducts);
-</script>
+        // --- УСІ ІНШІ ФУНКЦІЇ ЗАЛИШАЮТЬСЯ БЕЗ ЗМІН ---
+        function nextImg(btn) {
+            const container = btn.closest('.gallery-container');
+            const images = container.querySelectorAll('.product-img');
+            let activeIndex = Array.from(images).findIndex(img => img.classList.contains('active'));
+            images[activeIndex].classList.remove('active');
+            activeIndex = (activeIndex + 1) % images.length;
+            images[activeIndex].classList.add('active');
+        }
+
+        function prevImg(btn) {
+            const container = btn.closest('.gallery-container');
+            const images = container.querySelectorAll('.product-img');
+            let activeIndex = Array.from(images).findIndex(img => img.classList.contains('active'));
+            images[activeIndex].classList.remove('active');
+            activeIndex = (activeIndex - 1 + images.length) % images.length;
+            images[activeIndex].classList.add('active');
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price: Number(price) });
+            updateCartBadge();
+            showToast();
+        }
+
+        function updateCartBadge() { document.getElementById('cart-count').innerText = cart.length; }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            const itemsContainer = document.getElementById('cart-items');
+            const totalContainer = document.getElementById('cart-total');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                if (cart.length === 0) {
+                    itemsContainer.innerHTML = '<p class="text-center text-gray-500">Ваші санки порожні ❄️</p>';
+                    totalContainer.innerText = '0 ₴';
+                } else {
+                    let html = '';
+                    let total = 0;
+                    cart.forEach((item, index) => {
+                        html += `<div class="flex justify-between items-center mb-3 bg-red-50 p-3 rounded-lg border border-red-100"><span class="font-bold text-sm">${item.name}</span><div class="flex items-center gap-3"><span class="text-red-700 font-bold">${item.price} ₴</span><button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button></div></div>`;
+                        total += item.price;
+                    });
+                    itemsContainer.innerHTML = html;
+                    totalContainer.innerText = total + ' ₴';
+                }
+            } else { modal.classList.add('hidden'); }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            toggleCart(); toggleCart(); 
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.bottom = '30px';
+            setTimeout(() => { toast.style.bottom = '-100px'; }, 3000);
+        }
+
+        function sendTelegramOrder(e) {
+            e.preventDefault();
+            if (cart.length === 0) { alert("Додайте хоча б один товар у кошик!"); return; }
+            const name = document.getElementById('client_name').value;
+            const phone = document.getElementById('client_phone').value;
+            const delivery = document.getElementById('client_delivery').value;
+            let orderText = `🎄 <b>НОВЕ ЗАМОВЛЕННЯ (ToTo.Gifts)</b> 🎄\n\n👤 <b>Клієнт:</b> ${name}\n📞 <b>Телефон:</b> ${phone}\n📍 <b>Доставка:</b> ${delivery}\n\n🛍 <b>Товари:</b>\n`;
+            let total = 0;
+            cart.forEach(item => { orderText += `- ${item.name} (${item.price} ₴)\n`; total += item.price; });
+            orderText += `\n💰 <b>Разом:</b> ${total} ₴`;
+
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: CHAT_ID, text: orderText, parse_mode: 'HTML' })
+            }).then(res => {
+                if (res.ok) {
+                    alert("🎉 Дякуємо! Замовлення успішно відправлено!");
+                    cart = []; updateCartBadge(); toggleCart(); document.getElementById('order-form').reset();
+                } else { alert("Помилка відправки."); }
+            });
+        }
+
+        function createSnowflakes() {
+            const container = document.getElementById('snow-container');
+            const flakes = ['❄', '❅', '❆'];
+            for (let i = 0; i < 25; i++) {
+                let flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.innerText = flakes[Math.floor(Math.random() * flakes.length)];
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(flake);
+            }
+        }
+
+        window.onload = () => { createSnowflakes(); loadProducts(); };
+    </script>
 </body>
 </html>
